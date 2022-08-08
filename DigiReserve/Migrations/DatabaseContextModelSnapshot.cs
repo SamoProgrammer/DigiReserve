@@ -83,6 +83,34 @@ namespace DigiReserve.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("DigiReserve.Entities.ReserveTime", b =>
+                {
+                    b.Property<int>("ReserveTimeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AcceptorId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReservatoreId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("ReservedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ReserveTimeId");
+
+                    b.HasIndex("AcceptorId");
+
+                    b.HasIndex("ReservatoreId");
+
+                    b.ToTable("ReservedTimes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -209,6 +237,21 @@ namespace DigiReserve.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("DigiReserve.Entities.ReserveTime", b =>
+                {
+                    b.HasOne("DigiReserve.Authentication.ApplicationUser", "Acceptor")
+                        .WithMany()
+                        .HasForeignKey("AcceptorId");
+
+                    b.HasOne("DigiReserve.Authentication.ApplicationUser", "Reservatore")
+                        .WithMany()
+                        .HasForeignKey("ReservatoreId");
+
+                    b.Navigation("Acceptor");
+
+                    b.Navigation("Reservatore");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DigiReserve.Migrations
 {
-    public partial class initauth : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -194,6 +194,36 @@ namespace DigiReserve.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "ReservedTimes",
+                columns: table => new
+                {
+                    ReserveTimeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AcceptorId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReservatoreId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReservedTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservedTimes", x => x.ReserveTimeId);
+                    table.ForeignKey(
+                        name: "FK_ReservedTimes_AspNetUsers_AcceptorId",
+                        column: x => x.AcceptorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ReservedTimes_AspNetUsers_ReservatoreId",
+                        column: x => x.ReservatoreId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -230,6 +260,16 @@ namespace DigiReserve.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReservedTimes_AcceptorId",
+                table: "ReservedTimes",
+                column: "AcceptorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReservedTimes_ReservatoreId",
+                table: "ReservedTimes",
+                column: "ReservatoreId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -248,6 +288,9 @@ namespace DigiReserve.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ReservedTimes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigiReserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220806084834_init-auth")]
-    partial class initauth
+    [Migration("20220806162542_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,6 +83,34 @@ namespace DigiReserve.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("DigiReserve.Entities.ReserveTime", b =>
+                {
+                    b.Property<int>("ReserveTimeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AcceptorId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReservatoreId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("ReservedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ReserveTimeId");
+
+                    b.HasIndex("AcceptorId");
+
+                    b.HasIndex("ReservatoreId");
+
+                    b.ToTable("ReservedTimes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -211,6 +239,21 @@ namespace DigiReserve.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("DigiReserve.Entities.ReserveTime", b =>
+                {
+                    b.HasOne("DigiReserve.Authentication.ApplicationUser", "Acceptor")
+                        .WithMany()
+                        .HasForeignKey("AcceptorId");
+
+                    b.HasOne("DigiReserve.Authentication.ApplicationUser", "Reservatore")
+                        .WithMany()
+                        .HasForeignKey("ReservatoreId");
+
+                    b.Navigation("Acceptor");
+
+                    b.Navigation("Reservatore");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
